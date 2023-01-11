@@ -1,0 +1,5 @@
+[
+    { "id": 0, "name" :"AMEX Platinum", "cardStyle": "amex", "fee": 0, "limit": 10000 },
+    { "id": 1, "name" :"AMEX Gold", "cardStyle": "amex", "fee": 0.19, "limit": 5000 },
+    { "id": 2, "name" :"Visa", "cardStyle": "visa", "fee": 2.9, "limit": 1000 }
+]
