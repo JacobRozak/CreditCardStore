@@ -1,9 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Params, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import "./SingleCard.scss";
-
-import { Store } from "react-notifications-component";
 
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
@@ -16,6 +14,7 @@ import { initiateTransfer } from '../../redux/Slices/creditCardSlice'
 import { addTransfer } from '../../redux/Slices/transferSlice'
 
 import {Card, transferDetails} from  "../../interfaces/singleCard"
+import { notification } from "../../notifications/notifications";
 
 const SingleCard: FC = () => {
     const params = useParams<string>();
@@ -28,16 +27,17 @@ const SingleCard: FC = () => {
     const [pickedAmount, setPickedAmount]= useState<any>()
     const handlePickAmount = (e:React.ChangeEvent<HTMLInputElement>) => setPickedAmount(parseInt(e.target.value))
     const handleCardPic = (e:React.ChangeEvent<any>) => setPickedCard(parseInt(e.target.value))
-    const id: any = params.id
-    const numberyfied = parseInt(id)
     const submitTransaction = () => {
-      const submission: transferDetails = {
-        sender: numberyfied,
-        receiver: avaliableCards!.filter((obj:any) => obj.number.toString() == pickedCard)[0].id,
-        amount: pickedAmount
+      if (params.id) {
+        const id: number  = parseInt(params.id)
+        const submission: transferDetails = {
+          sender: id,
+          receiver: avaliableCards!.filter((obj:any) => obj.number.toString() == pickedCard)[0].id,
+          amount: pickedAmount
+        }
+        dispatch(initiateTransfer(submission))
+        dispatch(addTransfer(submission))
       }
-      dispatch(initiateTransfer(submission))
-      dispatch(addTransfer(submission))
       if (fullInfo !== undefined && pickedAmount !== undefined) {
         setFullInfo({
           id: fullInfo.id,
@@ -51,19 +51,7 @@ const SingleCard: FC = () => {
           pin: fullInfo.pin
         })
       }
-      Store.addNotification({
-        title: "The way to GO",
-        message: `you just transfered monies onto a new card`,
-        type: "success",
-        insert: "top",
-        container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
-        dismiss: {
-        duration: 1500,
-        onScreen: true
-        }
-      });
+      notification("success", "The way to GO", "ou just transfered monies onto a new card")
     }
     useEffect(() => {
         const item = creditCardItems.filter((obj:Card) => obj.id.toString() == params.id)[0]

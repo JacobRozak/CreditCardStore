@@ -12,9 +12,6 @@ const Header:FC = () => {
 
   return (
     <div className={dark ? "dark header" : "header"}>
-      <Link to="/">
-        <div className={dark ? "dark header__logo" : "header__logo"}>LOGO</div>
-      </Link>
       <nav className="header__nav">
         <ul className="header__ul">
           <li className="header__li">

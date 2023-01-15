@@ -2,7 +2,6 @@ import React, { FC, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
-import { Store } from "react-notifications-component";
 import "./CreateCard.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +11,7 @@ import { useDispatch } from "react-redux";
 import issuerData from  "../../context/data.json"
 
 import { issuerDetails } from "../../interfaces/singleCard";
+import { notification } from "../../notifications/notifications";
 
 const CreditCard: FC = () => {
 
@@ -51,19 +51,7 @@ const CreditCard: FC = () => {
   
   const handleSubmit = () => {
     if (name.length == 0 || number.length < 16 || parseInt(balance) <= 0 || issuerDetails && issuerDetails.limit && parseInt(balance) > issuerDetails.limit) {
-      Store.addNotification({
-        title: "Ohh NO!",
-        message: `these details may be incorrect, please fill them up as a real credit card`,
-        type: "danger",
-        insert: "top",
-        container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
-        dismiss: {
-          duration: 1500,
-          onScreen: true
-        }
-      });
+      notification("danger", "Ohh NO!", "these details may be incorrect, please fill them up as a real credit card")
     } else {
     dispatch(addCreditCard({
       id: Math.ceil(parseInt(Date.now().toFixed(5).toString())),
@@ -76,19 +64,7 @@ const CreditCard: FC = () => {
       balance: parseInt(balance),
       pin: parseInt(pin)
     }));
-    Store.addNotification({
-      title: "Wonderful!",
-      message: `new cart has been added`,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      animationIn: ["animate__animated", "animate__fadeIn"],
-      animationOut: ["animate__animated", "animate__fadeOut"],
-      dismiss: {
-        duration: 1500,
-        onScreen: true
-      }
-    });
+    notification("success", "Wonderful!", `new cart has been added`)
   }
 }
 
@@ -96,7 +72,6 @@ const CreditCard: FC = () => {
     <>
       <div className="paymentcard">
         <div className={closed ? "none" : "rccs__card backcolor"}>
-          <div className="rccs__card rccs__card--unknown">
             <Cards
               issuer={issuer}
               number={number}
@@ -105,7 +80,6 @@ const CreditCard: FC = () => {
               cvc={cvc}
               // focused={focus}
             />
-          </div>
 
           <br />
           <form>
